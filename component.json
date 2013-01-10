@@ -1,0 +1,7 @@
+{
+  "name": "vector",
+  "description": "vector component",
+  "version": "0.0.1",
+  "keywords": ["game", "vector", "component"],
+  "scripts": ["index.js"]
+}
