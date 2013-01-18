@@ -225,14 +225,19 @@ Vector.prototype.absolute = function () {
   return this.map(Math.abs)
 }
 
-
 /**
- * v.limit(-5, 5) // 8 => 5, -15 => -5
+ * v.limit(vector OR rectangle)
  */
 
 Vector.prototype.limit = function (r) {
-  this.max(r.pos)
-  this.min(r.size)
+  if (r instanceof Vector) {
+    this.max(r[1])
+    this.min(r[2])
+  }
+  else {
+    this.max(r.pos)
+    this.min(r.size)
+  }
   return this
 }
 
@@ -303,7 +308,8 @@ V.min = function (v) {
 
 V.dot = function (vec) {
   var product = 0
-  while (n--) {
+  var n = this.length + 1
+  while (--n) {
     product += this[n] * vec[n]
   }
   return product
