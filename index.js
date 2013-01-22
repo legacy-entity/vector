@@ -195,6 +195,22 @@ Vector.prototype.lerp = function (b, f) {
 }
 
 /**
+ * v.limit(rectangle)
+ */
+
+Vector.prototype.limit = function (r) {
+  if (r instanceof Vector) {
+    this.max(r[1])
+    this.min(r[2])
+  }
+  else {
+    this.max(r.pos)
+    this.min(r.size)
+  }
+  return this
+}
+
+/**
  * v.each(fn)
  */
 
@@ -226,22 +242,6 @@ Vector.prototype.absolute = function () {
 }
 
 /**
- * v.limit(vector OR rectangle)
- */
-
-Vector.prototype.limit = function (r) {
-  if (r instanceof Vector) {
-    this.max(r[1])
-    this.min(r[2])
-  }
-  else {
-    this.max(r.pos)
-    this.min(r.size)
-  }
-  return this
-}
-
-/**
  * v.neg() // 5 => -5
  */
 
@@ -259,6 +259,8 @@ Vector.prototype.ceil = function () { return this.map(Math.ceil) }
 
 Vector.prototype.pow = function (n) { return this.map(Math.pow.bind(this, n)) }
 Vector.prototype.sqrt = function () { return this.map(Math.sqrt) }
+
+Vector.prototype.atan2 = function () { return Math.atan2(this.y, this.x) }
 
 /**
  * Return the modulus of this vector.
@@ -360,7 +362,7 @@ V.rand = function (vec) {
 }
 
 V.add = V.plus = function (v) { return this.map(function (n,i) { return n+v[i] }) }
-V.sub = V.minus = function (v) { return this.map(function (n,i) { return n-v[i] }) }
+V.sub = V.minus = V.subtract = function (v) { return this.map(function (n,i) { return n-v[i] }) }
 
 V.mul = V.times = V.x = function (v) { return this.map(function (n,i) { return n*v[i] }) }
 V.div = V.divide = function (v) { return this.map(function (n,i) { return n/v[i] }) }
