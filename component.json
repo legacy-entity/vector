@@ -1,7 +1,9 @@
 {
   "name": "vector",
   "description": "vector component",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "keywords": ["game","vector","component"],
+  "author": "stagas",
+  "licence": "MIT",
   "scripts": ["index.js"]
 }
