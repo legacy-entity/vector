@@ -15,13 +15,7 @@ module.exports = Vector
 /**
  * Vector class.
  *
- * @param {Vector} [vector]
- * or
- * @param {String} [s]
- * or
- * @param {int} x 
- * @param {int} y 
- * @param {int} z 
+ * @param {mixed} [val]
  */
 
 function Vector (val) {
@@ -59,13 +53,12 @@ function Vector (val) {
 Vector.d2 = function (vec) { return Vector(vec || [0,0]) }
 Vector.d3 = function (vec) { return Vector(vec || [0,0,0]) }
 
-/**
- * Static values.
- */
+// static values.
 
 Vector.maxDecimal = 2
-Vector._dt = Math.floor(1000/60)
 Vector.count = 0
+
+// getters
 
 Vector.prototype.__defineGetter__('x', function () { return this[1] })
 Vector.prototype.__defineGetter__('y', function () { return this[2] })
@@ -87,6 +80,8 @@ Vector.prototype.__defineGetter__('top', function () { return this[2] })
 Vector.prototype.__defineGetter__('width', function () { return this[1] })
 Vector.prototype.__defineGetter__('height', function () { return this[2] })
 
+// setters
+
 Vector.prototype.__defineSetter__('x', function (v) { this[1] = v })
 Vector.prototype.__defineSetter__('y', function (v) { this[2] = v })
 Vector.prototype.__defineSetter__('z', function (v) { this[3] = v })
@@ -107,6 +102,12 @@ Vector.prototype.__defineSetter__('top', function (v) { this[2] = v })
 Vector.prototype.__defineSetter__('width', function (v) { this[1] = v })
 Vector.prototype.__defineSetter__('height', function (v) { this[2] = v })
 
+/**
+ * Convert to array.
+ * 
+ * @return {Array}
+ */
+
 Vector.prototype.toArray = function () {
   var arr = []
   this.each(function (n) { arr.push(n) })
@@ -114,34 +115,23 @@ Vector.prototype.toArray = function () {
 }
 
 /**
- * Vector utils.
- */
-
-Vector.prototype.dt = function (f) {
-  if (f) return (Vector._dt = f)
-  return this.copy().mul(Vector._dt)
-}
-
-/**
- * v.toString()
- * -or-
- * var str = "vector: "+v // casts
+ * Convert to string.
  *
- * Returns the Vector as a comma delimited
- * string of vector values.
+ * Returns a comma delimited
+ * string of vector components
+ * with fixed with `precision`.
  * 
- * @param {float} precision
- *
- * @return {String} comma delimited string of vector values
+ * @param {int} [precision]
+ * @return {string}
  */
 
 Vector.prototype.toString = function (precision) {
-  var s = this.toArray().map(function (n) { return n.toFixed() })
+  var s = this.toArray().map(function (n) { return n.toFixed(precision) })
   return s.join(',')
 }
 
 /**
- * Returns this.
+ * Getter.
  *
  * @return {Vector} this
  */
@@ -151,7 +141,7 @@ Vector.prototype.get = function () {
 }
 
 /**
- * v.set(0,4,15)
+ * Setter.
  * 
  * Sets values from an Array
  * or Vector object or arguments.
@@ -170,22 +160,23 @@ Vector.prototype.set = function (arr) {
 }
 
 /**
- * v2 = v.copy()
+ * Clone.
  * 
- * Returns a copy of the Vector.
- *
- * @return {Vector} copy
+ * @return {Vector} cloned
  */
 
-Vector.prototype.clone = 
+Vector.prototype.clone =
 Vector.prototype.copy = function () {
   return new Vector(this)
 }
 
-
-
 /**
- * a.interpolate(b, 0.75) // v(0,0).interpolate(v(4,4), 0.75) => v(3,3)
+ * Interpolate with another
+ * Vector given an amount `f`.
+ *
+ * @param {Vector} b
+ * @param {float} f
+ * @return {Vector} this
  */
 
 Vector.prototype.interpolate = 
@@ -195,7 +186,11 @@ Vector.prototype.lerp = function (b, f) {
 }
 
 /**
- * v.limit(rectangle)
+ * Limit with another vector
+ * or within a rectangle.
+ *
+ * @param {Vector|Rect} r
+ * @return {Vector} this
  */
 
 Vector.prototype.limit = function (r) {
@@ -211,7 +206,12 @@ Vector.prototype.limit = function (r) {
 }
 
 /**
- * v.each(fn)
+ * Iterate using `fn`.
+ *
+ * It will be called with `(vector, index)`.
+ *
+ * @param {fn} fn
+ * @return {Vector} this
  */
 
 Vector.prototype.each = function (fn) {
@@ -222,7 +222,14 @@ Vector.prototype.each = function (fn) {
 }
 
 /**
- * v.map(fn)
+ * Map using `fn`.
+ * 
+ * It will be called with `(vector, index)`.
+ * The returned values will be mapped
+ * to this vector.
+ *
+ * @param {fn} fn 
+ * @return {Vector} this
  */
 
 Vector.prototype.map = function (fn) {
@@ -233,7 +240,7 @@ Vector.prototype.map = function (fn) {
 }
 
 /**
- * v.abs() // -5 => 5, 5 => 5
+ * Absolute.
  */
 
 Vector.prototype.abs = 
@@ -242,34 +249,51 @@ Vector.prototype.absolute = function () {
 }
 
 /**
- * v.neg() // 5 => -5
+ * Negate.
  */
 
 Vector.prototype.neg = 
 Vector.prototype.negate = function () { return this.map(function (n) { return -n }) }
+
+/**
+ * Dividers/Multipliers.
+ */
 
 Vector.prototype.half = function () { return this.div(2) }
 Vector.prototype.double = function () { return this.mul(2) }
 Vector.prototype.triple = function () { return this.mul(3) }
 Vector.prototype.quad = function () { return this.mul(4) }
 
+/**
+ * Math utilities.
+ */
+
 Vector.prototype.floor = function () { return this.map(Math.floor) }
 Vector.prototype.round = function () { return this.map(Math.round) }
 Vector.prototype.ceil = function () { return this.map(Math.ceil) }
 
-Vector.prototype.pow = function (n) { return this.map(Math.pow.bind(this, n)) }
+Vector.prototype.pow = function (p) { return this.map(function (n) { return Math.pow(n, p) }) }
 Vector.prototype.sqrt = function () { return this.map(Math.sqrt) }
 
 Vector.prototype.atan2 = function () { return Math.atan2(this.y, this.x) }
 
 /**
- * Return the modulus of this vector.
+ * Modulus or magnitude.
  */
 
 Vector.prototype.mod = 
-Vector.prototype.modulus = function () {
+Vector.prototype.modulus = 
+Vector.prototype.mag =
+Vector.prototype.magnitude = function () {
   return Math.sqrt(this.dot(this))
 }
+
+/**
+ * Fill components up to a length.
+ * 
+ * @param {int} len
+ * @return {Vector} this
+ */
 
 Vector.prototype.fill = function (len) {
   var x = 0, n
@@ -277,6 +301,8 @@ Vector.prototype.fill = function (len) {
     n = this[i]
     this[i] = 'undefined' != typeof n ? (x = n) : x
   }
+  this.length = len
+  return this
 }
 
 /**
@@ -286,7 +312,7 @@ Vector.prototype.fill = function (len) {
 var V = {}
 
 /**
- * v.max(-5) // -8 => -5, -2 => -2
+ * Math.max
  */
 
 V.max = function (v) {
@@ -294,7 +320,7 @@ V.max = function (v) {
 }
 
 /**
- * v.min(5) // 8 => 5, 2 => 2
+ * Math.min
  */
 
 V.min = function (v) {
@@ -310,18 +336,15 @@ V.min = function (v) {
 
 V.dot = function (vec) {
   var product = 0
-  var n = this.length + 1
-  while (--n) {
-    product += this[n] * vec[n]
-  }
+  this.each(function (n,i) { product += n*vec[i] })
   return product
 }
 
 /**
  * Compute cross product against a vector.
  *
- * @param {Vector} b 
- * @return {Vector}
+ * @param {Vector} B
+ * @return {Vector} product
  */
 
 V.cross = function (B) {
@@ -334,12 +357,8 @@ V.cross = function (B) {
 }
 
 /**
- * v.copyTo(vec)
- * 
- * Copies this vector's values and length
- * to another one and returns the other
- * vector.
- * 
+ * Copy to another vector.
+ *
  * @param {Vector} vec
  * @return {Vector} vec
  */
@@ -351,7 +370,13 @@ V.copyTo = function (vec) {
 }
 
 /**
- * v.rand(vec) // v(5,5,5).rand(1,0,1) => v(0.287438,5,0.898736)
+ * Randomize values.
+ *
+ * Example:
+ *   v(5,5,5).rand(1,0,1)
+ *
+ * Outputs:
+ *   v(0.287438,5,0.898736)
  */
 
 V.rand = function (vec) {
@@ -361,34 +386,63 @@ V.rand = function (vec) {
   })
 }
 
+/**
+ * Add.
+ */
+
 V.add = V.plus = function (v) { return this.map(function (n,i) { return n+v[i] }) }
+
+/**
+ * Subtract.
+ */
+
 V.sub = V.minus = V.subtract = function (v) { return this.map(function (n,i) { return n-v[i] }) }
 
+/**
+ * Multiply.
+ */
+
 V.mul = V.times = V.x = function (v) { return this.map(function (n,i) { return n*v[i] }) }
+
+/**
+ * Divide.
+ */
+
 V.div = V.divide = function (v) { return this.map(function (n,i) { return n/v[i] }) }
 
-/*
-V.lt = function (x, y, z) {
-  return (this.x < x && this.y < y && this.z < z)
+/**
+ * Equalities.
+ */
+
+V.eq = V.equals = V.equal = function (v) {
+  var fail = this.length
+  this.each(function (n,i) { if (n===v[i]) fail-- })
+  return !fail
 }
 
-V.gt = function (x, y, z) {
-  return (this.x > x && this.y > y && this.z > z)
+V.lt = function (v) {
+  var fail = this.length
+  this.each(function (n,i) { if (n<v[i]) fail-- })
+  return !fail
 }
 
-V.lte = function (x, y, z) {
-  return (this.x <= x && this.y <= y && this.z <= z)
+V.gt = function (v) {
+  var fail = this.length
+  this.each(function (n,i) { if (n>v[i]) fail-- })
+  return !fail
 }
 
-V.gte = function (x, y, z) {
-  return (this.x >= x && this.y >= y && this.z >= z)
+V.lte = function (v) {
+  var fail = this.length
+  this.each(function (n,i) { if (n<=v[i]) fail-- })
+  return !fail
 }
 
-V.eq =
-V.equals = function (x, y, z) {
-  return (this.x === x && this.y === y && this.z === z)
+V.gte = function (v) {
+  var fail = this.length
+  this.each(function (n,i) { if (n>=v[i]) fail-- })
+  return !fail
 }
-*/
 
 /**
  * Vector inherits from V.
@@ -397,7 +451,11 @@ V.equals = function (x, y, z) {
 inherits(Vector, V, function (fn) { 
   return function (b) {
     var a = this
-    b = new Vector(b)
+    b = new Vector(
+      Array.isArray(b) || b instanceof Vector
+        ? b
+        : slice.call(arguments)
+    )
     if (b.length < a.length) {
       b.fill(a.length)
     }
@@ -407,6 +465,8 @@ inherits(Vector, V, function (fn) {
     return fn.call(this, b)
   }
 })
+
+// Levi-Civita
 
 Vector.i = Vector.I = new Vector([1,0,0])
 Vector.j = Vector.J = new Vector([0,1,0])
