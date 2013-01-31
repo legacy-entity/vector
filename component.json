@@ -4,6 +4,6 @@
   "version": "0.0.3",
   "keywords": ["game","vector","component"],
   "author": "stagas",
-  "licence": "MIT",
+  "license": "MIT",
   "scripts": ["index.js"]
 }
