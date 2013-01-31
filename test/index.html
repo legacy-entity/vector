@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>vector</title>
+    <link rel="stylesheet" href="../build/build.css">
+  </head>
+  <body>
+    <script src="../build/build.js"></script>
+    <script>
+    var v = require('vector')
+
+    console.assert(v(0).constructor === v)
+    console.assert((new v).constructor === v)
+
+    var a = v(10,20)
+    console.assert(a.x === 10)
+    console.assert(a.y === 20)
+    console.assert(a.z === undefined)
+
+    console.assert(a.X === 10)
+    console.assert(a.Y === 20)
+    console.assert(a.Z === undefined)
+
+    console.assert(a.a === 10)
+    console.assert(a.b === 20)
+    console.assert(a.c === undefined)
+
+    console.assert(a.A === 10)
+    console.assert(a.B === 20)
+    console.assert(a.C === undefined)
+
+    console.assert(a.left === 10)
+    console.assert(a.top === 20)
+
+    console.assert(a.width === 10)
+    console.assert(a.height === 20)
+
+    console.assert(a.toArray().toString() === '10,20')
+
+    console.assert(a.get() === a)
+
+    console.assert(a.set(5,10).toString() === '5,10')
+
+    var b = a.clone()
+    console.assert(a !== b)
+    console.assert(a.toString()===b.toString())
+
+    console.assert(v(a).lerp(v(10,20), 0.5).toString()==='8,15')
+    console.assert(v(a).lerp(v(10,20), 0).toString()==='5,10')
+    console.assert(v(a).lerp(v(10,20), 1).toString()==='10,20')
+
+    console.assert(v(a).limit(v(7,15)).toString()==='7,10')
+    console.assert(v(a).limit(v(7,9)).toString()==='7,9')
+    console.assert(v(a).limit(v(3,8)).toString()==='5,8')
+
+    console.assert(v(a).limit({
+      pos: v(4,4)
+    , size: v(7,9)
+    }).toString()==='5,9')
+
+    var cnt = 2, p = []
+    a.each(function (n, i) {
+      cnt--
+      console.assert(a[i] === n)
+      p.push(n)
+    })
+    console.assert(cnt === 0)
+    console.assert(p.toString()==='5,10')
+
+    console.assert(v(a).map(function (n) { return n+1 } ).toString()==='6,11')
+
+    console.assert(v(-10,10).abs().toString()==='10,10')
+
+    console.assert(v(-5,5).neg().toString()==='5,-5')
+
+    console.assert(v(a).half().toString()==='3,5')
+
+    console.assert(v(a).double().toString()==='10,20')
+    console.assert(v(a).triple().toString()==='15,30')
+    console.assert(v(a).quad().toString()==='20,40')
+
+    console.assert(v(1.6).floor()[1]===1)
+    console.assert(v(1.6).round()[1]===2)
+    console.assert(v(1.2).ceil()[1]===2)
+    
+    console.assert(v(2,3).pow(2).toString()==='4,9')
+
+    console.assert(v(4,4).sqrt().toString()==='2,2')
+
+    console.assert(v(a).atan2()===Math.atan2(10, 5))
+
+    console.assert(v(a).dot(a)===125)
+    console.assert(v(5,10,15).dot(4,6,8)===200)
+
+    console.assert(v(a).mag().toFixed(2)=='11.18')
+
+    console.assert(v(5,10,15).cross(4,6,8).toString()==='-10,20,-10')
+
+    console.assert(v(5).fill(3).length===3)
+    console.assert(v(5).fill(3)[3] === 5)
+
+    console.assert(v(5,10).max(7).toString()==='7,10')
+    console.assert(v(5,10).min(6).toString()==='5,6')
+
+    var b = v(a).copyTo(v(1,2))
+    console.assert(a !== b)
+    console.assert(a.toString()===b.toString())
+
+    console.assert(v(1,2,3).rand(1,0,1).floor().toString()==='0,2,0')
+
+    console.assert(v(1,2).add(3,3).toString()==='4,5')
+    console.assert(v(5,5).sub(3,2).toString()==='2,3')
+    console.assert(v(5,5).mul(2,3).toString()==='10,15')
+    console.assert(v(10,20).div(2).toString()==='5,10')
+
+    console.assert(v(10,20).eq(10,20)===true)
+    console.assert(v(10,20).lt(20,30)===true)
+    console.assert(v(10,20).lt(5,30)===false)
+    console.assert(v(10,20).gt(5,5)===true)
+    console.assert(v(10,20).gt(15,5)===false)
+    console.assert(v(10,20).lte(10,20)===true)
+    console.assert(v(10,20).lte(9,20)===false)
+    console.assert(v(10,20).gte(10,20)===true)
+    console.assert(v(10,20).gte(10,21)===false)
+
+    console.assert(v(5,5,5).mul(v.I).toString()==='5,0,0')
+    console.assert(v(5,5,5).mul(v.J).toString()==='0,5,0')
+    console.assert(v(5,5,5).mul(v.K).toString()==='0,0,5')
+    </script>
+  </body>
+</html>
